@@ -276,7 +276,7 @@ st.set_page_config(
 	layout="wide"
 )
 
-st.title("Flights Prices Prediction - AWS SageMaker")
+st.title("Flights Prices Prediction")
 
 # user inputs
 airline = st.selectbox(
