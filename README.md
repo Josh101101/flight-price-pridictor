@@ -2,6 +2,10 @@
 
 A web application that predicts flight prices based on user inputs using machine learning. Built with Streamlit, XGBoost, and robust data preprocessing pipelines.
 
+## Live Demo
+
+Access the deployed app here: https://flightpricepredictor.streamlit.app/
+
 ## Features
 
 - Interactive web interface for flight price prediction
