@@ -267,7 +267,7 @@ y_train = train.price.copy()
 
 # fit and save the preprocessor
 preprocessor.fit(X_train, y_train)
-joblib.dump(preprocessor, "preprocessor.joblib")
+joblib.dump(preprocessor, "preprocessor.pkl")
 
 # web application
 st.set_page_config(
@@ -332,7 +332,7 @@ x_new = pd.DataFrame(dict(
 })
 
 if st.button("Predict"):
-	saved_preprocessor = joblib.load("preprocessor.joblib")
+	saved_preprocessor = joblib.load("preprocessor.pkl")
 	x_new_pre = saved_preprocessor.transform(x_new)
 
 	with open("xgboost-model", "rb") as f:
