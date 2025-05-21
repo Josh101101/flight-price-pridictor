@@ -34,6 +34,7 @@ from feature_engine.encoding import (
 
 sklearn.set_config(transform_output="pandas")
 from custom_transformers import is_north, part_of_day
+from custom_transformers import RBFPercentileSimilarity, is_north, part_of_day
 
 
 # convenience 
@@ -86,42 +87,7 @@ time_transformer = FeatureUnion(transformer_list=[
 ])
 
 # duration
-class RBFPercentileSimilarity(BaseEstimator, TransformerMixin):
-	def __init__(self, variables=None, percentiles=[0.25, 0.5, 0.75], gamma=0.1):
-		self.variables = variables
-		self.percentiles = percentiles
-		self.gamma = gamma
 
-
-	def fit(self, X, y=None):
-		if not self.variables:
-			self.variables = X.select_dtypes(include="number").columns.to_list()
-
-		self.reference_values_ = {
-			col: (
-				X
-				.loc[:, col]
-				.quantile(self.percentiles)
-				.values
-				.reshape(-1, 1)
-			)
-			for col in self.variables
-		}
-
-		return self
-
-
-	def transform(self, X):
-		objects = []
-		for col in self.variables:
-			columns = [f"{col}_rbf_{int(percentile * 100)}" for percentile in self.percentiles]
-			obj = pd.DataFrame(
-				data=rbf_kernel(X.loc[:, [col]], Y=self.reference_values_[col], gamma=self.gamma),
-				columns=columns
-			)
-			objects.append(obj)
-		return pd.concat(objects, axis=1)
-	
 
 def duration_category(X, short=180, med=400):
 	return (
