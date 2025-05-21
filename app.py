@@ -33,7 +33,7 @@ from feature_engine.encoding import (
 )
 
 sklearn.set_config(transform_output="pandas")
-
+from custom_transformers import is_north, part_of_day
 
 
 # convenience 
@@ -62,18 +62,6 @@ location_pipe1 = Pipeline(steps=[
 	("scaler", PowerTransformer())
 ])
 
-def is_north(X):
-	columns = X.columns.to_list()
-	north_cities = ["Delhi", "Kolkata", "Mumbai", "New Delhi"]
-	return (
-		X
-		.assign(**{
-			f"{col}_is_north": X.loc[:, col].isin(north_cities).astype(int)
-			for col in columns
-		})
-		.drop(columns=columns)
-	)
-
 location_transformer = FeatureUnion(transformer_list=[
 	("part1", location_pipe1),
 	("part2", FunctionTransformer(func=is_north))
@@ -85,27 +73,6 @@ time_pipe1 = Pipeline(steps=[
 	("scaler", MinMaxScaler())
 ])
 
-def part_of_day(X, morning=4, noon=12, eve=16, night=20):
-	columns = X.columns.to_list()
-	X_temp = X.assign(**{
-		col: pd.to_datetime(X.loc[:, col], format='mixed').dt.hour
-		for col in columns
-	})
-
-	return (
-		X_temp
-		.assign(**{
-			f"{col}_part_of_day": np.select(
-				[X_temp.loc[:, col].between(morning, noon, inclusive="left"),
-				 X_temp.loc[:, col].between(noon, eve, inclusive="left"),
-				 X_temp.loc[:, col].between(eve, night, inclusive="left")],
-				["morning", "afternoon", "evening"],
-				default="night"
-			)
-			for col in columns
-		})
-		.drop(columns=columns)
-	)
 
 time_pipe2 = Pipeline(steps=[
 	("part", FunctionTransformer(func=part_of_day)),
@@ -267,7 +234,7 @@ y_train = train.price.copy()
 
 # fit and save the preprocessor
 preprocessor.fit(X_train, y_train)
-joblib.dump(preprocessor, "preprocessor.pkl")
+joblib.dump(preprocessor, "preprocessor.joblib")
 
 # web application
 st.set_page_config(
