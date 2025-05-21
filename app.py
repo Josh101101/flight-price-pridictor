@@ -332,7 +332,7 @@ x_new = pd.DataFrame(dict(
 })
 
 if st.button("Predict"):
-	saved_preprocessor = joblib.load("preprocessor.pkl")
+	saved_preprocessor = joblib.load("preprocessor.joblib")
 	x_new_pre = saved_preprocessor.transform(x_new)
 
 	with open("xgboost-model", "rb") as f:
