@@ -5,6 +5,22 @@ import joblib
 import numpy as np
 import pandas as pd
 import xgboost as xgb
+import sklearn
+from sklearn.metrics import r2_score
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics.pairwise import rbf_kernel
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import (
+	OneHotEncoder,
+	OrdinalEncoder,
+	StandardScaler,
+	MinMaxScaler,
+	PowerTransformer,   
+	FunctionTransformer
+)
 
 
 
